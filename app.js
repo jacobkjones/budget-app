@@ -123,7 +123,7 @@ var DOMstrings = {
                 current.value = "";
             
         });
-
+        // put input focus back onto description
         fieldsArr[0].focus();
 
         },
