@@ -45,30 +45,32 @@ let budgetController = (function() {
     percentage: -1
   };
 
+  function addItem(type, des, val) {
+    let newItem, ID;
+
+    //ID = Last ID + 1
+    //create new ID
+    if (data.allItems[type].length > 0) {
+      ID = data.allItems[type][data.allItems[type].length - 1].id + 1;
+    } else {
+      ID = 0;
+    }
+
+    //create new item based on type inc or exp
+    if (type === "exp") {
+      newItem = new Expense(ID, des, val);
+    } else if (type === "inc") {
+      newItem = new Income(ID, des, val);
+    } else {
+    }
+    //Push it into our data structure
+    data.allItems[type].push(newItem);
+    //return new data element
+    return newItem;
+  }
+
   return {
-    addItem: function(type, des, val) {
-      let newItem, ID;
-
-      //ID = Last ID + 1
-      //create new ID
-      if (data.allItems[type].length > 0) {
-        ID = data.allItems[type][data.allItems[type].length - 1].id + 1;
-      } else {
-        ID = 0;
-      }
-
-      //create new item based on type inc or exp
-      if (type === "exp") {
-        newItem = new Expense(ID, des, val);
-      } else if (type === "inc") {
-        newItem = new Income(ID, des, val);
-      } else {
-      }
-      //Push it into our data structure
-      data.allItems[type].push(newItem);
-      //return new data element
-      return newItem;
-    },
+    addItem,
 
     calculateBudget: function() {
       // calculate total income and expenses
@@ -87,15 +89,16 @@ let budgetController = (function() {
     },
 
     getBudget: function() {
-      return {
-        budget: data.budget,
-        totalInc: data.totals.inc,
-        totalExp: data.totals.exp,
-        percentage: data.percentage
-      };
+      let {
+        budget,
+        percentage,
+        totals: { inc: totalInc, exp: totalExp }
+      } = data;
+
+      return { budget, totalInc, totalExp, percentagetage };
     },
 
-    testing: function() {
+    testing: () => {
       console.log(data);
     }
   };
@@ -124,7 +127,33 @@ let UIController = (function() {
     addListItem: function(obj, type) {
       let html, newHtml, element;
 
+      let isIncome = type === "inc";
+
       // create HTML string with placeholder text
+
+      function getElementId() {
+        if (type === "inc") {
+          return "income";
+        } else {
+          return "expense";
+        }
+      }
+
+      let s = myArray.length > 1 ? "s" : "";
+
+      `Do you want to save ${myArray.lenth} dog${s}?`;
+
+      let html = `<div class="item clearfix" id="${getElementId()}-0">
+      <div class="item__description">${obj.description}</div>
+        <div class="right clearfix">
+          <div class="item__value">${obj.value}</div>
+          <div class="item__delete">
+            <button class="item__delete--btn">
+              <i class="ion-ios-close-outline"></i>
+            </button>
+          </div>
+        </div>
+      </div>`;
 
       if (type === "inc") {
         element = DOMstrings.incomeContainer;
